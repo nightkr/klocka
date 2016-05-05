@@ -5,6 +5,7 @@ use std::fs::{File, OpenOptions};
 use polling::Poll;
 use std::thread::sleep;
 use std::time::Duration;
+use std::fmt::Display;
 use libc::{POLLPRI, POLLERR};
 
 const BASE_PATH: &'static str = "/sys/class/gpio";
@@ -16,6 +17,11 @@ fn open_write() -> OpenOptions {
     opts.create(false);
     opts.truncate(false);
     opts
+}
+
+fn write_file<A: AsRef<Path>, B: Display>(path: A, msg: B) -> Result<()> {
+    let mut file = try!(open_write().open(path));
+    write!(file, "{}", msg)
 }
 
 pub struct GpioTrigger {
@@ -42,9 +48,8 @@ impl GpioTrigger {
     fn init(&mut self) -> Result<()> {
         try!(self.uninit());
         let base = Path::new(BASE_PATH);
-        let mut export = try!(open_write().open(base.join("export")));
         println!("exporting {}", self.pin);
-        try!(write!(export, "{}", self.pin));
+        try!(write_file(base.join("export"), self.pin));
         println!("done");
 
         println!("path: {:?}", self.path);
@@ -53,16 +58,11 @@ impl GpioTrigger {
         sleep(Duration::from_millis(100));
 
         println!("setting direction");
-        let mut direction = try!(open_write().open(self.path.join("direction")));
-        try!(write!(direction, "in"));
-
+        try!(write_file(self.path.join("direction"), "in"));
         println!("setting active_low");
-        let mut active_low = try!(open_write().open(self.path.join("active_low")));
-        try!(write!(active_low, "{}", if ACTIVE_LOW {1} else {0}));
-
+        try!(write_file(self.path.join("active_low"), if ACTIVE_LOW {1} else {0}));
         println!("setting edge");
-        let mut edge = try!(open_write().open(self.path.join("edge")));
-        try!(write!(edge, "rising"));
+        try!(write_file(self.path.join("edge"), "rising"));
 
         println!("opening");
         self.value_fd = Some(try!(File::open(self.path.join("value"))));
