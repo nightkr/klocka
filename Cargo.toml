@@ -1,0 +1,7 @@
+[package]
+name = "klocka"
+version = "0.1.0"
+authors = ["Teo Klestrup Röijezon <teo@nullable.se>"]
+
+[dependencies]
+libc = "0.2.11"
