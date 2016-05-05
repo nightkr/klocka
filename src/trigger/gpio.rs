@@ -3,7 +3,8 @@ use std::path::{Path, PathBuf};
 use std::io::{Result, Error, ErrorKind, Read, Write, Seek, SeekFrom};
 use std::fs::{File, OpenOptions};
 use polling::Poll;
-use std::thread::sleep_ms;
+use std::thread::sleep;
+use std::time::Duration;
 use libc::{POLLPRI, POLLERR};
 
 const BASE_PATH: &'static str = "/sys/class/gpio";
@@ -49,7 +50,7 @@ impl GpioTrigger {
         println!("path: {:?}", self.path);
         // Wait for the pin to become available
         // FIXME: Any way to wait for this dynamically instead?
-        sleep_ms(100);
+        sleep(Duration::from_millis(100));
 
         println!("setting direction");
         let mut direction = try!(open_write().open(self.path.join("direction")));

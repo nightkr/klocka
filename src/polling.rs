@@ -1,4 +1,4 @@
-use libc::{poll, pollfd, POLLPRI};
+use libc::{poll, pollfd};
 use std::io::{Result, Error};
 use std::os::unix::io::AsRawFd;
 
