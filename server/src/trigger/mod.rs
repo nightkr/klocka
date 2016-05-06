@@ -6,6 +6,8 @@ pub use trigger::iface::Trigger;
 use std::io::{Result, Error, ErrorKind, stdin};
 use std::env;
 
+const GPIO_PIN: u8 = 22;
+
 pub fn create_trigger() -> Result<Box<Trigger>> {
     match env::var("KLOCKA_TRIGGER").unwrap_or("GPIO".to_string()).as_ref() {
         "FD" => {
@@ -13,7 +15,7 @@ pub fn create_trigger() -> Result<Box<Trigger>> {
             Ok(Box::new(trigger))
         },
         "GPIO" => {
-            let trigger = try!(gpio::GpioTrigger::new(22));
+            let trigger = try!(gpio::GpioTrigger::new(GPIO_PIN));
             Ok(Box::new(trigger))
         },
         x => {
