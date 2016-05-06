@@ -35,12 +35,14 @@ impl Action for GcmAction {
 
             json.set("to", GCM_TARGET);
         }).unwrap()).unwrap();
-        self.client
+        let result = self.client
             .post(GCM_ENDPOINT)
             .body(&msg)
             .header(hyper::header::ContentType(mime!(Application/Json)))
+            .header(hyper::header::Authorization(format!("key={}", GCM_KEY)))
             .send()
             .unwrap();
+        println!("{:?}", result);
         Ok(())
     }
 }
