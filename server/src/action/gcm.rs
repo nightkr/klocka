@@ -9,6 +9,7 @@ use retry::retry_until;
 use std::io::Result;
 
 use self::hyper::client::Client;
+use self::hyper::status::StatusCode;
 use self::serde_json::ser;
 use self::regex::Regex;
 
@@ -71,7 +72,12 @@ impl Action for GcmAction {
         }, |x| match x {
             &Ok(ref response) => {
                 println!("{:?}", response);
-                response.status == hyper::Ok
+                match response.status {
+                    // For some reason, Google seems to return these spuriously...
+                    StatusCode::LengthRequired => false,
+                    StatusCode::NotFound => false,
+                    _ => true
+                }
             },
             _ => false
         }, 10);
