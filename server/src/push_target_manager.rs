@@ -1,18 +1,19 @@
 use std::sync::{Arc, Mutex};
 use std::fs::{File, OpenOptions};
 use std::io::{Result, BufRead, BufReader, ErrorKind, Write};
+use std::collections::HashSet;
 
 const FILE_PATH: &'static str = "push_targets.txt";
 
 #[derive(Clone)]
 pub struct PushTargetManager {
-    endpoints: Arc<Mutex<Vec<String>>>
+    endpoints: Arc<Mutex<HashSet<String>>>
 }
 
 impl PushTargetManager {
     pub fn new() -> PushTargetManager {
         let mut ptm = PushTargetManager {
-            endpoints: Arc::new(Mutex::new(vec![]))
+            endpoints: Arc::new(Mutex::new(HashSet::new()))
         };
         match ptm.read_from_file() {
             Err(ref e) if e.kind() == ErrorKind::NotFound => println!("{} not found, starting with no targets", FILE_PATH),
@@ -25,7 +26,7 @@ impl PushTargetManager {
         let mut endpoints = self.endpoints.lock().unwrap();
         let file = BufReader::new(try!(File::open(FILE_PATH)));
         for line in file.lines() {
-            endpoints.push(try!(line));
+            endpoints.insert(try!(line));
         }
         Ok(())
     }
@@ -38,14 +39,16 @@ impl PushTargetManager {
         writeln!(file, "{}", endpoint)
     }
 
-    pub fn all(&self) -> Vec<String> {
+    pub fn all(&self) -> HashSet<String> {
         let endpoints = self.endpoints.lock().unwrap();
         endpoints.clone()
     }
 
     pub fn add(&self, endpoint: &str) {
         let mut endpoints = self.endpoints.lock().unwrap();
-        endpoints.push(endpoint.to_owned());
-        self.add_to_file(endpoint).unwrap()
+        let is_new = endpoints.insert(endpoint.to_owned());
+        if is_new {
+            self.add_to_file(endpoint).unwrap()
+        }
     }
 }
