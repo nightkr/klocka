@@ -4,6 +4,10 @@
 
 Create a file called `server/gcm_key.txt` containing **ONLY** your Google Cloud Messaging key. Afterwards you should be able to `cargo run` (from the `server` directory).
 
+## Building (client)
+
+In `web-client/manifest.json`, change `gcm_sender_id` to your Google project ID.
+
 ### Customizing
 
 If you don't want to make it bind any GPIO pins, set the environment variable `KLOCKA_TRIGGER` to `FD`. If you want to change the pin it uses (22 by default), change `GPIO_PIN` in `server/src/trigger/mod.rs`.
