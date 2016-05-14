@@ -5,6 +5,7 @@ extern crate regex;
 
 use action::iface::Action;
 use retry::retry_until;
+use push_target_manager::PushTargetManager;
 
 use std::io::Result;
 
@@ -15,19 +16,20 @@ use self::regex::Regex;
 
 const GCM_KEY: &'static str = include_str!("../../gcm_key.txt");
 //const GCM_ENDPOINT: &'static str = "https://gcm-http.googleapis.com/gcm/send/fsc3M87LMQo:APA91bH15EC140SxXruImHDFrr-7RDJQyvHow8_Zlxq7OiFZoE9tYNxtfX2hXCrhCsIp8KoJhz9HwWojSo3aGkfn7lUaRXuWf4Y9gcKM0jv-HZ7B4vUEsasZrXWmBoZ3GXE_z2fEnOm1";
-const GCM_ENDPOINT: &'static str = "https://android.googleapis.com/gcm/send/d5d53ZcncjE:APA91bGFjvRTnORHtR_TYQqM0p7ld_xPmZcl0-NwBBpOFke5LRMgL_RR_-ZPSx9OXCuPbBUxlIrBOK3TFuBi163kzMFCtsEqCu0MkxDfQdOAXs2ii_U_OIpLI3IKYAVn1aFj2jMD964i";
 const GCM_ENDPOINT_REGEX: &'static str = r"^(?P<url>https://android\.googleapis\.com/gcm/send)/(?P<token>.*)$";
 
 pub struct GcmAction {
     client: Client,
-    gcm_endpoint_regex: Regex
+    gcm_endpoint_regex: Regex,
+    targets: PushTargetManager
 }
 
 impl GcmAction {
-    pub fn new() -> GcmAction {
+    pub fn new(targets: &PushTargetManager) -> GcmAction {
         GcmAction {
             client: Client::new(),
-            gcm_endpoint_regex: Regex::new(GCM_ENDPOINT_REGEX).unwrap()
+            gcm_endpoint_regex: Regex::new(GCM_ENDPOINT_REGEX).unwrap(),
+            targets: targets.clone()
         }
     }
 }
@@ -44,11 +46,9 @@ impl GcmAction {
             (endpoint, None)
         }
     }
-}
 
-impl Action for GcmAction {
-    fn trigger(&mut self) -> Result<()> {
-        let (url, token) = self.parse_endpoint(GCM_ENDPOINT);
+    fn send_to_endpoint(&mut self, endpoint: &str) -> Result<()> {
+        let (url, token) = self.parse_endpoint(endpoint);
         let msg = format!("{}\r\n", ser::to_string(&jsonway::object(|json| {
             json.object("notification", |json| {
                 json.set("title", "Klocka");
@@ -82,6 +82,15 @@ impl Action for GcmAction {
             _ => false
         }, 10);
         println!("{:?}", result);
+        Ok(())
+    }
+}
+
+impl Action for GcmAction {
+    fn trigger(&mut self) -> Result<()> {
+        for endpoint in self.targets.all() {
+            try!(self.send_to_endpoint(&endpoint));
+        }
         Ok(())
     }
 }
