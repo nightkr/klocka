@@ -5,6 +5,8 @@ extern crate hyper;
 extern crate mime;
 
 mod polling;
+mod retry;
+
 mod action;
 mod trigger;
 
