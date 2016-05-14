@@ -1,4 +1,3 @@
-extern crate hyper;
 extern crate jsonway;
 extern crate serde_json;
 extern crate regex;
@@ -9,8 +8,9 @@ use push_target_manager::PushTargetManager;
 
 use std::io::Result;
 
-use self::hyper::client::Client;
-use self::hyper::status::StatusCode;
+use hyper::header;
+use hyper::client::Client;
+use hyper::status::StatusCode;
 use self::serde_json::ser;
 use self::regex::Regex;
 
@@ -65,9 +65,9 @@ impl GcmAction {
             self.client
                 .post(url)
                 .body(&msg)
-                .header(hyper::header::Authorization(format!("key={}", GCM_KEY)))
-                .header(hyper::header::ContentType(mime!(Application/Json)))
-                .header(hyper::header::ContentLength(msg.len() as u64))
+                .header(header::Authorization(format!("key={}", GCM_KEY)))
+                .header(header::ContentType(mime!(Application/Json)))
+                .header(header::ContentLength(msg.len() as u64))
                 .send()
         }, |x| match x {
             &Ok(ref response) => {
