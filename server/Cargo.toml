@@ -5,6 +5,7 @@ authors = ["Teo Klestrup Röijezon <teo@nullable.se>"]
 
 [dependencies]
 libc = "0.2.11"
-curl = "0.2.19"
+hyper = "0.9.3"
 jsonway = "1.0.0"
 serde_json = "0.7.0"
+mime = "0.2.0"

@@ -1,4 +1,8 @@
 extern crate libc;
+#[macro_use]
+extern crate hyper;
+#[macro_use]
+extern crate mime;
 
 mod polling;
 mod action;
