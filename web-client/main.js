@@ -8,13 +8,26 @@ navigator.serviceWorker.register("worker.js").then(function(worker) {
 
 navigator.serviceWorker.ready.then(function(worker) {
   console.log("Worker ready! ", arguments);
-  worker.pushManager.subscribe({
+  return worker.pushManager.subscribe({
     "userVisibleOnly": true
-  }).then(function(sub) {
-    console.log("Subscription:", sub);
-    msgBox.innerText = "Successfully registered, endpoint: " + sub.endpoint;
-  }).catch(function(err) {
-    console.log("Failed to register push", err);
-    msgBox.innerText = "Failed to register, make sure push is allowed and check your logs";
-  });
+  })
+}).then(function(sub) {
+  console.log("Subscription:", sub);
+  msgBox.innerText = "Successfully registered, endpoint: " + sub.endpoint;
+  let xhr = new XMLHttpRequest();
+  xhr.onreadystatechange = function(res) {
+    if (xhr.readyState === XMLHttpRequest.DONE) {
+      console.log("Submitted endpoint: ", res, xhr);
+      if (xhr.status === 200) {
+        msgBox.innerText = "Successfully submitted endpoint";
+      } else {
+        msgBox.innerText = "Failed to submit endpoint";
+      }
+    }
+  };
+  xhr.open('POST', '/submit', true);
+  xhr.send(sub.endpoint);
+}).catch(function(err) {
+  console.log("Failed to register push", err);
+  msgBox.innerText = "Failed to register, make sure push is allowed and check your logs";
 });
