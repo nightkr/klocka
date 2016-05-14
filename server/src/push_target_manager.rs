@@ -1,4 +1,8 @@
 use std::sync::{Arc, Mutex};
+use std::fs::{File, OpenOptions};
+use std::io::{Result, BufRead, BufReader, ErrorKind, Write};
+
+const FILE_PATH: &'static str = "push_targets.txt";
 
 #[derive(Clone)]
 pub struct PushTargetManager {
@@ -7,11 +11,31 @@ pub struct PushTargetManager {
 
 impl PushTargetManager {
     pub fn new() -> PushTargetManager {
-        PushTargetManager {
-            endpoints: Arc::new(Mutex::new(vec![
-                "https://android.googleapis.com/gcm/send/d5d53ZcncjE:APA91bGFjvRTnORHtR_TYQqM0p7ld_xPmZcl0-NwBBpOFke5LRMgL_RR_-ZPSx9OXCuPbBUxlIrBOK3TFuBi163kzMFCtsEqCu0MkxDfQdOAXs2ii_U_OIpLI3IKYAVn1aFj2jMD964i".to_owned()
-            ]))
+        let mut ptm = PushTargetManager {
+            endpoints: Arc::new(Mutex::new(vec![]))
+        };
+        match ptm.read_from_file() {
+            Err(ref e) if e.kind() == ErrorKind::NotFound => println!("{} not found, starting with no targets", FILE_PATH),
+            x => x.unwrap()
         }
+        ptm
+    }
+
+    fn read_from_file(&mut self) -> Result<()> {
+        let mut endpoints = self.endpoints.lock().unwrap();
+        let file = BufReader::new(try!(File::open(FILE_PATH)));
+        for line in file.lines() {
+            endpoints.push(try!(line));
+        }
+        Ok(())
+    }
+
+    fn add_to_file(&self, endpoint: &str) -> Result<()> {
+        let mut file = try!(OpenOptions::new()
+            .append(true)
+            .create(true)
+            .open(FILE_PATH));
+        writeln!(file, "{}", endpoint)
     }
 
     pub fn all(&self) -> Vec<String> {
@@ -22,5 +46,6 @@ impl PushTargetManager {
     pub fn add(&self, endpoint: &str) {
         let mut endpoints = self.endpoints.lock().unwrap();
         endpoints.push(endpoint.to_owned());
+        self.add_to_file(endpoint).unwrap()
     }
 }
