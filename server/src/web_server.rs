@@ -14,6 +14,7 @@ const CONTENT_INDEX: &'static [u8] = include_bytes!("../../web-client/index.html
 const CONTENT_MANIFEST: &'static [u8] = include_bytes!("../../web-client/manifest.json");
 const CONTENT_MAIN_JS: &'static [u8] = include_bytes!("../../web-client/main.js");
 const CONTENT_WORKER_JS: &'static [u8] = include_bytes!("../../web-client/worker.js");
+const CONTENT_RINGTONE: &'static [u8] = include_bytes!("../../web-client/ringtone.ogg");
 const CONTENT_404: &'static [u8] = include_bytes!("../../web-client/404");
 
 fn write_static(content: &[u8], mime: Mime, mut res: Response) {
@@ -43,6 +44,7 @@ impl Handler for WebHandler {
             (&hyper::Get, Some("/manifest.json")) => write_static(CONTENT_MANIFEST, mime!(Application/Json), res),
             (&hyper::Get, Some("/main.js")) => write_static(CONTENT_MAIN_JS, mime!(Application/Javascript), res),
             (&hyper::Get, Some("/worker.js")) => write_static(CONTENT_WORKER_JS, mime!(Application/Javascript), res),
+            (&hyper::Get, Some("/ringtone.ogg")) => write_static(CONTENT_RINGTONE, mime!(Audio/("Ogg")), res),
             (&hyper::Post, Some("/submit")) => submit_endpoint(&self.push_targets, req),
             _ => {
                 *res.status_mut() = StatusCode::NotFound;

@@ -1,5 +1,8 @@
 let msgBox = document.getElementById('msg');
 
+let ringtone = new Audio("ringtone.ogg");
+let channel = new MessageChannel();
+
 msgBox.innerText = "Trying to register push notifications...";
 
 if (navigator.serviceWorker === undefined) {
@@ -18,6 +21,14 @@ Notification.requestPermission().then(function() {
   return navigator.serviceWorker.ready;
 }).then(function(worker) {
   console.log("Worker ready! ", arguments);
+
+  channel.port1.onmessage = function(msg) {
+    if (msg.data === "open") {
+      ringtone.play();
+    }
+  };
+  worker.active.postMessage("channel", [channel.port2]);
+
   if (worker.pushManager === undefined) {
     msgBox.innerText = "Sorry, your browser doesn't support W3C Web Push. :("
   }
