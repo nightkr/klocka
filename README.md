@@ -26,8 +26,18 @@ currently implement the Push API required for this to function.
 ## Customizing
 
 If you don't want to make it bind any GPIO pins, set the environment variable
-`KLOCKA_TRIGGER` to `FD`, which will make it trigger on newlines in stdin instead. If you want to change the pin it uses (22 by default),
+`KLOCKA_TRIGGER` to `FD`, which will make it trigger on newlines in stdin instead. If you want to change the pin it uses (BCM 22 by default),
 change `GPIO_PIN` in `server/src/trigger/mod.rs`. The port for the web UI is set as `WEB_PORT` in `server/src/main.rs`.
+
+## Building (physically)
+
+Use a multimeter to find out which cable to the LED carries the signal (you
+might want to take a picture). Desolder the cables to the battery enclosure,
+speaker, and LED. Solder jumper cables to where both cables to the battery
+enclosure went, as well as for the signal that went to the LED. Connect the two
+power cables to a 3v3 pin and a ground pin on the Pi (the one that went to the
+positive battery pole should go to the 3v3 pin), and the LED cable to BCM pin
+22 (physical pin 15).
 
 ## Building (client)
 
