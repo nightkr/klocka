@@ -6,7 +6,9 @@ navigator.serviceWorker.register("worker.js").then(function(worker) {
   console.log("Failed to register worker:", err);
 });
 
-navigator.serviceWorker.ready.then(function(worker) {
+Notification.requestPermission().then(function() {
+  return navigator.serviceWorker.ready;
+}).then(function(worker) {
   console.log("Worker ready! ", arguments);
   return worker.pushManager.subscribe({
     "userVisibleOnly": true
