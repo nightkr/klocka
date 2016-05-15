@@ -18,12 +18,14 @@ use push_target_manager::PushTargetManager;
 
 use std::thread;
 
+const WEB_PORT: u16 = 8080;
+
 fn main() {
     let push_targets = PushTargetManager::new();
 
     let web_push_targets = push_targets.clone();
     thread::spawn(|| {
-        web_server::launch(web_push_targets, 8080).unwrap()
+        web_server::launch(web_push_targets, WEB_PORT).unwrap()
     });
 
     let mut trigger = create_trigger().unwrap();

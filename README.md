@@ -1,16 +1,29 @@
 # Klocka
 
+## Motivation
+
+Well, I recently got [an awful (cheap) doorbell](http://www.clasohlson.com/se/Tr%C3%A5dl%C3%B6s-d%C3%B6rrklocka/36-6016) from Clas Ohlson. As it turns out, my AA batteries wouldn't even fit inside the receiver, and the speaker sounds awful. But, what if I could hook up the receiver to a RPi instead? Hmm...
+
+## Usage
+
+When compiled, this should create a single self-contained binary, which listens
+on port 8080 for the web interface and binds to the GPIO pin 22. To register
+your browser, go to http://localhost:8080/ and approve the permission request.
+If you want to be able to register a remote device, you'll need to put a SSL
+terminating reverse proxy in front of this, since browsers for some reason don't
+support push notifications from unencrypted websites.
+
 ## Browser support
 
-Currently only Chrome is supported. Firefox has support for Push, but requires a
+Currently only Google Chrome is supported. Firefox has support for Push, but requires a
 custom encryption scheme that I haven't got around to, yet. No other browsers
 currently implement the Push API required for this to function.
 
 ## Customizing
 
 If you don't want to make it bind any GPIO pins, set the environment variable
-`KLOCKA_TRIGGER` to `FD`. If you want to change the pin it uses (22 by default),
-change `GPIO_PIN` in `server/src/trigger/mod.rs`.
+`KLOCKA_TRIGGER` to `FD`, which will make it trigger on newlines in stdin instead. If you want to change the pin it uses (22 by default),
+change `GPIO_PIN` in `server/src/trigger/mod.rs`. The port for the web UI is set as `WEB_PORT` in `server/src/main.rs`.
 
 ## Building (client)
 
@@ -39,4 +52,4 @@ directory. `~/.cargo/config` should contain at least the following:
 linker = "arm-linux-gnueabihf-gcc"
 ```
 
-Finally, simply run `server/crossbuild-arm.sh` to compile!
+Finally, run `server/crossbuild-arm.sh` to compile!
