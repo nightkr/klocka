@@ -48,14 +48,4 @@ You'll need:
 
 (Note: Currently the AUR's ARM version of GCC is broken, you'll need to add `--std=gnu++03` to `$CXXFLAGS` in the `PKGBUILD` for GCC 6 to want to build GCC 5)
 
-First, sync git submodules and run `server/openssl-build-arm.sh` to build OpenSSL.
-
-Afterwards, you'll need to set up your `~/.cargo/config` so it knows about your
-GCC install. It should contain at least the following:
-
-```
-[target.armv7-unknown-linux-gnueabihf]
-linker = "arm-linux-gnueabihf-gcc"
-```
-
-Finally, run `server/crossbuild-arm.sh` to compile!
+First, sync git submodules and run `server/openssl-build-arm.sh` to build OpenSSL. Then, run `server/crossbuild-arm.sh` to compile!
