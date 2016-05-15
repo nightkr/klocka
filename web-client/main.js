@@ -1,5 +1,7 @@
 let msgBox = document.getElementById('msg');
 
+msgBox.innerText = "Trying to register push notifications...";
+
 if (navigator.serviceWorker === undefined) {
   msgBox.innerText = "Sorry, your browser doesn't support service workers. :(";
 } else if (Notification === undefined) {
