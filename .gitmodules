@@ -1,0 +1,4 @@
+[submodule "server/openssl"]
+	path = server/openssl
+	url = https://github.com/openssl/openssl
+	branch = origin/OpenSSL_1_0_2h

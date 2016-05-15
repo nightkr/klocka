@@ -45,13 +45,13 @@ You'll need:
 
 * A `rustc` target (install with `rustup target add armv7-unknown-linux-gnueabihf`)
 * A GCC for linking to the target platform (on Arch, this means `arm-unknown-linux-gnueabihf` from the AUR)
-* OpenSSL for the target platform (the easiest way is to copy `openssl-build-arm.sh` to the OpenSSL source directory, adapt the paths inside it, and run it)
 
 (Note: Currently the AUR's ARM version of GCC is broken, you'll need to add `--std=gnu++03` to `$CXXFLAGS` in the `PKGBUILD` for GCC 6 to want to build GCC 5)
 
+First, sync git submodules and run `server/openssl-build-arm.sh` to build OpenSSL.
+
 Afterwards, you'll need to set up your `~/.cargo/config` so it knows about your
-GCC install, and tell `server/crossbuild-arm.sh` about your OpenSSL install
-directory. `~/.cargo/config` should contain at least the following:
+GCC install. It should contain at least the following:
 
 ```
 [target.armv7-unknown-linux-gnueabihf]
