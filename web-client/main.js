@@ -1,5 +1,11 @@
 let msgBox = document.getElementById('msg');
 
+if (navigator.serviceWorker === undefined) {
+  msgBox.innerText = "Sorry, your browser doesn't support service workers. :(";
+} else if (Notification === undefined) {
+  msgBox.innerText = "Sorry, your browser doesn't support notifications. :(";
+}
+
 navigator.serviceWorker.register("worker.js").then(function(worker) {
   console.log("Registered worker:", worker);
 }).catch(function(err) {
@@ -10,11 +16,19 @@ Notification.requestPermission().then(function() {
   return navigator.serviceWorker.ready;
 }).then(function(worker) {
   console.log("Worker ready! ", arguments);
+  if (worker.pushManager === undefined) {
+    msgBox.innerText = "Sorry, your browser doesn't support W3C Web Push. :("
+  }
   return worker.pushManager.subscribe({
     "userVisibleOnly": true
   })
 }).then(function(sub) {
   console.log("Subscription:", sub);
+
+  if (sub.getKey !== undefined) {
+    msgBox.innerText = "Sorry, Klocka doesn't currently support Firefox's Push encryption. :(";
+  }
+
   msgBox.innerText = "Successfully registered, endpoint: " + sub.endpoint;
   let xhr = new XMLHttpRequest();
   xhr.onreadystatechange = function(res) {
