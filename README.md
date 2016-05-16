@@ -2,6 +2,28 @@
 
 ## [Demo](https://www.youtube.com/watch?v=GejDrrDToao)
 
+## Testimonials
+
+> I think this captures the essence of the "IoT" trend - take a function accomplished by a simple existing device, and do it using mindboggling amounts of hardware and software complexity.
+
+-- [userbinator](https://news.ycombinator.com/item?id=11703762)
+
+> I doubt this dude is trying to "disrupt" the doorbell industry.
+
+-- [riebschlager](https://news.ycombinator.com/item?id=11704117)
+
+> But yes, it's strongly in the Rube Goldberg territory.
+
+-- [viraptor](https://news.ycombinator.com/item?id=11703806)
+
+> Is this a joke?
+
+-- [eng_monkey](https://news.ycombinator.com/item?id=11704237)
+
+> This is awesome, you should start a Kickstarter!
+
+-- No one, ever. Hopefully.
+
 ## Motivation
 
 Well, I recently got [an awful (cheap) doorbell](http://www.clasohlson.com/se/Tr%C3%A5dl%C3%B6s-d%C3%B6rrklocka/36-6016) from Clas Ohlson. As it turns out, my AA batteries wouldn't even fit inside the receiver, and the speaker sounds awful. But, what if I could hook up the receiver to a RPi instead? Hmm...
