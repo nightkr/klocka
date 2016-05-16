@@ -23,12 +23,13 @@ requires you to expose the service to the public, which probably isn't a great i
 
 ## Limitations
 
-At least on Chrome for desktop, the ringtone doesn't trigger unless the page is open.
+At least on Chrome and Firefox for desktop, the ringtone doesn't trigger unless
+the page is open. This should change when/if browsers start supporting the `audio`
+parameter for notifications...
 
 ## Browser support
 
-Currently only Google Chrome is supported. Firefox has support for Push, but requires a
-custom encryption scheme that I haven't got around to, yet. No other browsers
+Currently only Google Chrome and Firefox are supported. No other browsers
 currently implement the Push API required for this to function.
 
 ## Customizing
