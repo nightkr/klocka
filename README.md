@@ -13,6 +13,12 @@ If you want to be able to register a remote device, you'll need to put a SSL
 terminating reverse proxy in front of this, since browsers for some reason don't
 support push notifications from unencrypted websites.
 
+To make things worse, at least Chrome doesn't like loading workers from untrusted
+domains, so even a self-signed certificate won't work out of the box. To get
+around this, you'll need to download the certificate to your browser and
+whitelist it. Alternately, sign it through a service like Let's Encrypt, but that
+requires you to expose the service to the public, which probably isn't a great idea...
+
 ## Limitations
 
 At least on Chrome for desktop, the ringtone doesn't trigger unless the page is open.
