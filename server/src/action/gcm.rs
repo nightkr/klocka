@@ -35,15 +35,15 @@ impl GcmAction {
 }
 
 impl GcmAction {
-    fn parse_endpoint<'a>(&self, endpoint: &'a str) -> (&'a str, Option<&'a str>) {
+    fn parse_endpoint(&self, endpoint: &str) -> (String, Option<String>) {
         let gcm_captures = self.gcm_endpoint_regex.captures(endpoint);
         if let Some(gcm_captures) = gcm_captures {
-            let url = gcm_captures.name("url").unwrap();
-            let token = gcm_captures.name("token");
+            let url = gcm_captures.name("url").unwrap().replace("https://", "http://");
+            let token = gcm_captures.name("token").map(|x| x.to_owned());
             println!("{} {:?}", url, token);
             (url, token)
         } else {
-            (endpoint, None)
+            (endpoint.to_owned(), None)
         }
     }
 
@@ -55,7 +55,7 @@ impl GcmAction {
                 json.set("text", "Open the door!");
             });
 
-            if let Some(x) = token {
+            if let Some(ref x) = token {
                 json.set("to", x);
             }
         }).unwrap()).unwrap());
@@ -63,7 +63,7 @@ impl GcmAction {
 
         let result = retry_until(|| {
             self.client
-                .post(url)
+                .post(&url)
                 .body(&msg)
                 .header(header::Authorization(format!("key={}", GCM_KEY)))
                 .header(header::ContentType(mime!(Application/Json)))
@@ -79,7 +79,7 @@ impl GcmAction {
                     _ => true
                 }
             },
-            _ => false
+            _ => true
         }, 10);
         println!("{:?}", result);
         Ok(())
