@@ -1,5 +1,7 @@
 # Klocka
 
+## [Demo](https://www.youtube.com/watch?v=GejDrrDToao)
+
 ## Motivation
 
 Well, I recently got [an awful (cheap) doorbell](http://www.clasohlson.com/se/Tr%C3%A5dl%C3%B6s-d%C3%B6rrklocka/36-6016) from Clas Ohlson. As it turns out, my AA batteries wouldn't even fit inside the receiver, and the speaker sounds awful. But, what if I could hook up the receiver to a RPi instead? Hmm...
