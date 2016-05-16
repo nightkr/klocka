@@ -50,11 +50,6 @@ impl GcmAction {
     fn send_to_endpoint(&mut self, endpoint: &str) -> Result<()> {
         let (url, token) = self.parse_endpoint(endpoint);
         let msg = format!("{}\r\n", ser::to_string(&jsonway::object(|json| {
-            json.object("notification", |json| {
-                json.set("title", "Klocka");
-                json.set("text", "Open the door!");
-            });
-
             if let Some(ref x) = token {
                 json.set("to", x);
             }
