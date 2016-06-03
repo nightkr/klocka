@@ -7,3 +7,5 @@ script:
   - cd server
   - cargo build --verbose
   - cargo test --verbose
+before_install:
+  - openssl aes-256-cbc -K $encrypted_308c1d62148a_key -iv $encrypted_308c1d62148a_iv -in gcm_key.txt.enc -out server/gcm_key.txt -d
